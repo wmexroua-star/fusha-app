@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1a1209" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#faf6ef" media="(prefers-color-scheme: light)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>فُصحى</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Amiri+Quran&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf6ef;
+    --bg2: #f0e9dc;
+    --bg3: #e8dece;
+    --text: #1c1408;
+    --text2: #5a4a2e;
+    --text3: #8a7255;
+    --gold: #b8892a;
+    --gold2: #d4a843;
+    --gold3: #e8c878;
+    --accent: #6b3a1f;
+    --border: rgba(184,137,42,0.25);
+    --shadow: rgba(28,20,8,0.12);
+    --card: rgba(255,252,245,0.95);
+    --overlay: rgba(28,20,8,0.06);
+    --glow: rgba(212,168,67,0.15);
+  }
+  /* System dark mode fallback */
+  @media (prefers-color-scheme: dark) {
+    :root:not(.light) {
+      --bg: #0f0c07;
+      --bg2: #1a1510;
+      --bg3: #231c12;
+      --text: #f0e6d0;
+      --text2: #c8a870;
+      --text3: #8a7255;
+      --gold: #d4a843;
+      --gold2: #e8c878;
+      --gold3: #f0d898;
+      --accent: #e89050;
+      --border: rgba(212,168,67,0.2);
+      --shadow: rgba(0,0,0,0.4);
+      --card: rgba(26,21,16,0.95);
+      --overlay: rgba(212,168,67,0.04);
+      --glow: rgba(212,168,67,0.08);
+    }
+  }
+  /* Manual dark mode class */
+  :root.dark {
+    --bg: #0f0c07;
+    --bg2: #1a1510;
+    --bg3: #231c12;
+    --text: #f0e6d0;
+    --text2: #c8a870;
+    --text3: #8a7255;
+    --gold: #d4a843;
+    --gold2: #e8c878;
+    --gold3: #f0d898;
+    --accent: #e89050;
+    --border: rgba(212,168,67,0.2);
+    --shadow: rgba(0,0,0,0.4);
+    --card: rgba(26,21,16,0.95);
+    --overlay: rgba(212,168,67,0.04);
+    --glow: rgba(212,168,67,0.08);
+  }
+  /* Manual light mode class (overrides system dark) */
+  :root.light {
+    --bg: #faf6ef;
+    --bg2: #f0e9dc;
+    --bg3: #e8dece;
+    --text: #1c1408;
+    --text2: #5a4a2e;
+    --text3: #8a7255;
+    --gold: #b8892a;
+    --gold2: #d4a843;
+    --gold3: #e8c878;
+    --accent: #6b3a1f;
+    --border: rgba(184,137,42,0.25);
+    --shadow: rgba(28,20,8,0.12);
+    --card: rgba(255,252,245,0.95);
+    --overlay: rgba(28,20,8,0.06);
+    --glow: rgba(212,168,67,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Amiri', 'Noto Naskh Arabic', serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Geometric background pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(45deg, transparent, transparent 30px, var(--overlay) 30px, var(--overlay) 31px),
+      repeating-linear-gradient(-45deg, transparent, transparent 30px, var(--overlay) 30px, var(--overlay) 31px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Radial glow */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -20%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80vw;
+    height: 80vw;
+    background: radial-gradient(ellipse, var(--glow) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ═══ HEADER ═══ */
+  header {
+    padding: 52px 24px 20px;
+    text-align: center;
+    position: relative;
+  }
+
+  .header-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .ornament-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    max-width: 60px;
+  }
+
+  .ornament-diamond {
+    width: 8px;
+    height: 8px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    box-shadow: 0 0 12px var(--gold2);
+  }
+
+  .app-title {
+    font-family: 'Amiri', serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 2px;
+    line-height: 1;
+    position: relative;
+  }
+
+  .app-title span {
+    background: linear-gradient(135deg, var(--gold), var(--gold2), var(--gold3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .app-subtitle {
+    font-size: 13px;
+    color: var(--text3);
+    letter-spacing: 3px;
+    margin-top: 4px;
+    font-family: 'Noto Naskh Arabic', serif;
+    font-weight: 400;
+  }
+
+  /* ═══ MAIN WIDGET CARD ═══ */
+  .widget-section {
+    padding: 8px 20px 16px;
+  }
+
+  .widget-label {
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 4px;
+    text-align: center;
+    margin-bottom: 14px;
+    font-family: 'Noto Naskh Arabic', serif;
+  }
+
+  .main-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 36px 28px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 40px var(--shadow), 0 0 0 1px var(--border);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .main-card:active { transform: scale(0.98); }
+
+  .main-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--gold2), var(--gold), transparent);
+  }
+
+  .main-card::after {
+    content: '';
+    position: absolute;
+    top: -60%;
+    left: -20%;
+    width: 140%;
+    height: 140%;
+    background: radial-gradient(ellipse at 50% 0%, var(--glow) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .card-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: var(--bg);
+    font-size: 11px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+    font-family: 'Noto Naskh Arabic', serif;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .card-type-badge::before {
+    content: '✦';
+    font-size: 9px;
+  }
+
+  .arabic-word {
+    font-family: 'Amiri', serif;
+    font-size: 54px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 8px;
+    transition: opacity 0.4s ease;
+  }
+
+  .word-diacritic {
+    font-size: 13px;
+    color: var(--gold);
+    margin-bottom: 20px;
+    font-family: 'Amiri', serif;
+    font-style: italic;
+  }
+
+  .divider-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  .div-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+
+  .div-star {
+    color: var(--gold);
+    font-size: 14px;
+  }
+
+  .word-meaning {
+    font-size: 19px;
+    color: var(--text2);
+    line-height: 1.9;
+    font-family: 'Amiri', serif;
+  }
+
+  .word-root {
+    display: inline-block;
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--text3);
+    border: 1px solid var(--border);
+    padding: 4px 16px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    font-family: 'Noto Naskh Arabic', serif;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .timer-display {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'Noto Naskh Arabic', serif;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .timer-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold2);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .share-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    font-size: 11px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Noto Naskh Arabic', serif;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .share-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: var(--glow);
+  }
+
+  /* Progress ring */
+  .progress-ring-container {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .progress-ring {
+    transform: rotate(-90deg);
+  }
+
+  .progress-ring-bg { stroke: var(--border); }
+  .progress-ring-fill {
+    stroke: var(--gold);
+    stroke-dasharray: 88;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear;
+  }
+
+  /* ═══ TABS ═══ */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    padding: 0 20px;
+    margin-bottom: 16px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text3);
+    border-radius: 12px;
+    font-family: 'Amiri', serif;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center;
+  }
+
+  .tab-btn.active {
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: var(--bg);
+    border-color: transparent;
+    box-shadow: 0 4px 16px rgba(184,137,42,0.3);
+  }
+
+  /* ═══ CONTENT SECTIONS ═══ */
+  .content-section {
+    padding: 0 20px;
+    flex: 1;
+    display: none;
+  }
+
+  .content-section.active { display: block; }
+
+  /* ═══ QURAN CARD ═══ */
+  .quran-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px 24px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px var(--shadow);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .quran-card:active { transform: scale(0.99); }
+
+  .quran-card::before {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, var(--gold), var(--gold2), transparent);
+    border-radius: 0 20px 20px 0;
+  }
+
+  .verse-text {
+    font-family: 'Amiri Quran', 'Amiri', serif;
+    font-size: 22px;
+    line-height: 2.2;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .verse-ref {
+    font-size: 12px;
+    color: var(--gold);
+    text-align: center;
+    font-family: 'Noto Naskh Arabic', serif;
+    margin-bottom: 14px;
+    letter-spacing: 1px;
+  }
+
+  .verse-tafsir {
+    font-size: 15px;
+    color: var(--text2);
+    line-height: 1.9;
+    font-family: 'Amiri', serif;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ═══ VOCAB LIST ═══ */
+  .vocab-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 12px var(--shadow);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .vocab-card:active { transform: scale(0.99); }
+
+  .vocab-letter {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--bg2), var(--bg3));
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Amiri', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .vocab-info { flex: 1; text-align: right; }
+
+  .vocab-word {
+    font-family: 'Amiri', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .vocab-def {
+    font-size: 13px;
+    color: var(--text3);
+    font-family: 'Noto Naskh Arabic', serif;
+    line-height: 1.5;
+  }
+
+  .vocab-arrow {
+    color: var(--text3);
+    font-size: 18px;
+    opacity: 0.5;
+  }
+
+  /* ═══ DETAIL MODAL ═══ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 100;
+    display: flex;
+    align-items: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: var(--bg);
+    border-radius: 28px 28px 0 0;
+    padding: 12px 24px 48px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    position: relative;
+  }
+
+  .modal-overlay.open .modal { transform: translateY(0); }
+
+  .modal-handle {
+    width: 40px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 24px;
+  }
+
+  .modal-word {
+    font-family: 'Amiri', serif;
+    font-size: 64px;
+    font-weight: 700;
+    text-align: center;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .modal-root {
+    text-align: center;
+    font-size: 14px;
+    color: var(--gold);
+    margin-bottom: 24px;
+    font-family: 'Amiri', serif;
+    font-style: italic;
+  }
+
+  .modal-section-title {
+    font-size: 12px;
+    color: var(--text3);
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+    font-family: 'Noto Naskh Arabic', serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .modal-section-title::before,
+  .modal-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .modal-meaning {
+    font-family: 'Amiri', serif;
+    font-size: 20px;
+    color: var(--text2);
+    line-height: 2;
+    text-align: center;
+    margin-bottom: 28px;
+    padding: 20px;
+    background: var(--overlay);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+
+  .modal-usage {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    color: var(--text);
+    line-height: 2.2;
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .modal-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .action-btn {
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .action-btn.primary {
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: var(--bg);
+    border-color: transparent;
+    grid-column: 1 / -1;
+    font-size: 16px;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(184,137,42,0.3);
+  }
+
+  .action-btn:active { transform: scale(0.97); }
+
+  /* ═══ BOTTOM NAV ═══ */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    padding: 12px 32px calc(12px + env(safe-area-inset-bottom));
+    display: flex;
+    justify-content: space-around;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 50;
+  }
+
+  .nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px 16px;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    color: var(--text3);
+  }
+
+  .nav-btn.active { color: var(--gold); }
+  .nav-btn.active .nav-icon { background: var(--glow); }
+
+  .nav-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.2s ease;
+  }
+
+  .nav-label {
+    font-size: 10px;
+    font-family: 'Noto Naskh Arabic', serif;
+    letter-spacing: 0.5px;
+  }
+
+  /* Scrollable content area with bottom nav space */
+  .scroll-content {
+    padding-bottom: 100px;
+  }
+
+  /* ═══ ANIMATIONS ═══ */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .fade-in { animation: fadeInUp 0.5s ease forwards; }
+  .fade-in-delay-1 { animation: fadeInUp 0.5s ease 0.1s forwards; opacity: 0; }
+  .fade-in-delay-2 { animation: fadeInUp 0.5s ease 0.2s forwards; opacity: 0; }
+
+  .word-refreshing .arabic-word {
+    background: linear-gradient(90deg, var(--text), var(--gold2), var(--text));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 1.5s linear;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: var(--bg);
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-family: 'Noto Naskh Arabic', serif;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 200;
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(184,137,42,0.4);
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Notification dot */
+  .notif-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--gold2);
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    animation: pulse 2s infinite;
+  }
+
+  /* Refresh Button */
+  .refresh-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text3);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+
+  .refresh-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: rotate(180deg);
+  }
+
+  /* Section header */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Amiri', serif;
+    font-size: 20px;
+    color: var(--text);
+  }
+
+  .section-count {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'Noto Naskh Arabic', serif;
+    background: var(--overlay);
+    padding: 3px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+
+  /* ═══ DARK MODE TOGGLE ═══ */
+  .theme-toggle {
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    transform: translateY(-50%);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    box-shadow: 0 2px 12px var(--shadow);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    width: 64px;
+    height: 34px;
+  }
+
+  .theme-toggle:active { transform: translateY(-50%) scale(0.95); }
+
+  .toggle-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .toggle-icons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 5px;
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .toggle-icon {
+    font-size: 13px;
+    line-height: 1;
+    transition: opacity 0.3s ease;
+  }
+
+  .toggle-thumb {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    box-shadow: 0 2px 8px rgba(184,137,42,0.4);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+    left: 4px;
+    z-index: 3;
+  }
+
+  /* Dark mode: thumb slides right */
+  :root.dark .toggle-thumb {
+    transform: translateX(30px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not(.light) .toggle-thumb {
+      transform: translateX(30px);
+    }
+  }
+
+  /* Ripple on toggle */
+  @keyframes toggleRipple {
+    0% { transform: scale(0); opacity: 0.5; }
+    100% { transform: scale(3); opacity: 0; }
+  }
+
+  .toggle-ripple {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--gold2);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    pointer-events: none;
+    animation: toggleRipple 0.5s ease forwards;
+  }
+
+  /* Transition for smooth theme change */
+  body, .main-card, .quran-card, .vocab-card, .modal, .bottom-nav, header {
+    transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+  }
+
+  /* Mode label tooltip */
+  .mode-label {
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: var(--text3);
+    font-family: 'Noto Naskh Arabic', serif;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+
+  .theme-toggle:hover .mode-label { opacity: 1; }
+
+  /* Stars animation for dark mode switch */
+  @keyframes starPop {
+    0% { opacity: 0; transform: scale(0) rotate(0deg); }
+    60% { opacity: 1; transform: scale(1.3) rotate(20deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+
+  .star-burst {
+    position: fixed;
+    font-size: 20px;
+    pointer-events: none;
+    z-index: 999;
+    animation: starPop 0.5s ease forwards, fadeOut 0.3s ease 0.4s forwards;
+  }
+
+  @keyframes fadeOut {
+    to { opacity: 0; transform: scale(0.5) translateY(-20px); }
+  }
+
+  /* ═══ QURANIC OCCURRENCES ═══ */
+  .quran-occurrences-section {
+    margin-top: 4px;
+  }
+
+  .occurrences-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .occurrences-count-badge {
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: var(--bg);
+    font-size: 11px;
+    font-family: 'Noto Naskh Arabic', serif;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .occurrence-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 16px 14px;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
+  }
+
+  .occurrence-card::before {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--gold), var(--gold2));
+    border-radius: 0 16px 16px 0;
+  }
+
+  .occurrence-card:active { transform: scale(0.99); }
+
+  .occurrence-verse {
+    font-family: 'Amiri Quran', 'Amiri', serif;
+    font-size: 20px;
+    line-height: 2.2;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  /* Highlight the matching word inside the verse */
+  .occurrence-verse .highlight {
+    color: var(--gold2);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+  }
+
+  .occurrence-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .occurrence-ref {
+    font-size: 12px;
+    color: var(--gold);
+    font-family: 'Noto Naskh Arabic', serif;
+    letter-spacing: 0.5px;
+  }
+
+  .occurrence-surah-num {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'Noto Naskh Arabic', serif;
+    background: var(--overlay);
+    border: 1px solid var(--border);
+    padding: 2px 10px;
+    border-radius: 20px;
+  }
+
+  .no-occurrences {
+    text-align: center;
+    padding: 24px 16px;
+    color: var(--text3);
+    font-family: 'Amiri', serif;
+    font-size: 16px;
+    background: var(--bg2);
+    border-radius: 16px;
+    border: 1px dashed var(--border);
+  }
+
+  .no-occurrences .no-occ-icon {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  /* Animate occurrence cards in */
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(16px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  .occurrence-card {
+    animation: slideInRight 0.35s ease both;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="fade-in">
+    <!-- Dark Mode Toggle -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme(event)" title="تبديل الوضع">
+      <div class="toggle-track">
+        <div class="toggle-thumb" id="toggleThumb"></div>
+        <div class="toggle-icons">
+          <span class="toggle-icon">🌙</span>
+          <span class="toggle-icon">☀️</span>
+        </div>
+      </div>
+      <div class="mode-label" id="modeLabel">نهاري</div>
+    </button>
+    <div class="header-ornament">
+      <div class="ornament-line"></div>
+      <div class="ornament-diamond"></div>
+      <div class="ornament-line"></div>
+    </div>
+    <div class="app-title"><span>فُصحى</span></div>
+    <div class="app-subtitle">كلمة اليوم من التراث العربي</div>
+  </header>
+
+  <!-- Widget Section -->
+  <div class="widget-section fade-in-delay-1" id="homeSection">
+    <div class="widget-label">✦ &nbsp; بطاقة اليوم &nbsp; ✦</div>
+    <div class="main-card" id="mainCard" onclick="openWordDetail()">
+      <!-- Progress Ring -->
+      <div class="progress-ring-container">
+        <svg class="progress-ring" width="36" height="36">
+          <circle class="progress-ring-bg" cx="18" cy="18" r="14" fill="none" stroke-width="2"/>
+          <circle class="progress-ring-fill" cx="18" cy="18" r="14" fill="none" stroke-width="2" id="progressRing"/>
+        </svg>
+      </div>
+
+      <!-- Refresh button -->
+      <button class="refresh-btn" onclick="event.stopPropagation(); refreshContent()">↻</button>
+
+      <div class="card-type-badge" id="cardTypeBadge">مفردة لغوية</div>
+      <div class="arabic-word" id="mainWord">سَكِينة</div>
+      <div class="word-diacritic" id="mainDiacritic">اسم مؤنث</div>
+      <div class="divider-ornament">
+        <div class="div-line"></div>
+        <div class="div-star">✦</div>
+        <div class="div-line"></div>
+      </div>
+      <div class="word-meaning" id="mainMeaning">الطمأنينة والهدوء التام الذي يسكن القلب، الراحة النفسية والسلام الداخلي</div>
+      <div class="word-root" id="mainRoot">الجذر: س ك ن</div>
+      <div class="card-footer">
+        <div class="timer-display">
+          <div class="timer-dot"></div>
+          <span id="timerText">يتجدد بعد ٣ ساعات</span>
+        </div>
+        <button class="share-btn" onclick="event.stopPropagation(); shareWord()">
+          <span>↑</span> مشاركة
+        </button>
+      </div>
+    </div>
+
+    <!-- Quran Verse Widget -->
+    <div class="widget-label" style="margin-top:20px">✦ &nbsp; آية قرآنية &nbsp; ✦</div>
+    <div class="quran-card" id="quranCard" onclick="openVerseDetail()">
+      <div class="verse-text" id="verseText">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</div>
+      <div class="verse-ref" id="verseRef">سورة الرعد • الآية ٢٨</div>
+      <div class="verse-tafsir" id="verseTafsir">إن الطمأنينة الحقيقية والسكينة الروحية لا توجد إلا في ذكر الله وإقامة صلته بالخالق سبحانه</div>
+    </div>
+  </div>
+
+  <!-- Vocabulary Section -->
+  <div class="content-section scroll-content" id="vocabSection">
+    <div class="section-header">
+      <div class="section-title">المفردات</div>
+      <div class="section-count" id="vocabCount">٢٠ كلمة</div>
+    </div>
+    <div id="vocabList"></div>
+  </div>
+
+  <!-- Quran Section -->
+  <div class="content-section scroll-content" id="quranSection">
+    <div class="section-header">
+      <div class="section-title">الآيات القرآنية</div>
+      <div class="section-count">١٥ آية</div>
+    </div>
+    <div id="verseList"></div>
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="navHome" onclick="switchTab('home')">
+    <div class="nav-icon" style="position:relative">🏠<div class="notif-dot"></div></div>
+    <div class="nav-label">الرئيسية</div>
+  </button>
+  <button class="nav-btn" id="navVocab" onclick="switchTab('vocab')">
+    <div class="nav-icon">📖</div>
+    <div class="nav-label">المفردات</div>
+  </button>
+  <button class="nav-btn" id="navQuran" onclick="switchTab('quran')">
+    <div class="nav-icon">🌙</div>
+    <div class="nav-label">القرآن</div>
+  </button>
+</nav>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="detailModal">
+    <div class="modal-handle"></div>
+    <div class="modal-word" id="modalWord">سَكِينة</div>
+    <div class="modal-root" id="modalRoot">اسم مؤنث • الجذر: س ك ن</div>
+
+    <!-- Quranic Occurrences Section — أولاً -->
+    <div id="modalQuranSection" class="quran-occurrences-section">
+      <div class="modal-section-title" style="margin-top:8px">
+        <span>في القرآن الكريم</span>
+      </div>
+      <div class="occurrences-header">
+        <div style="font-size:13px; color:var(--text3); font-family:'Noto Naskh Arabic',serif">مواضع ورود الكلمة أو جذرها</div>
+        <div class="occurrences-count-badge" id="occurrencesCountBadge">٠ مواضع</div>
+      </div>
+      <div id="occurrencesList"></div>
+    </div>
+
+    <div class="modal-section-title" style="margin-top:20px">المعنى</div>
+    <div class="modal-meaning" id="modalMeaning">الطمأنينة والهدوء التام الذي يسكن القلب</div>
+    <div class="modal-section-title">الاستخدام</div>
+    <div class="modal-usage" id="modalUsage">شعر بالسكينة تغمر روحه حين قرأ القرآن الكريم</div>
+    <div class="modal-section-title">الجذر اللغوي</div>
+    <div class="modal-meaning" id="modalEtymology" style="font-size:16px">من الجذر (س ك ن) الذي يدل على الهدوء والثبات وانعدام الحركة</div>
+
+    <div class="modal-actions">
+      <button class="action-btn primary" onclick="shareWord()">↑ &nbsp; مشاركة الكلمة</button>
+      <button class="action-btn" onclick="copyWord()">نسخ</button>
+      <button class="action-btn" onclick="closeModal()">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══ THEME MANAGEMENT ═══
+let isDark = false;
+
+function detectInitialTheme() {
+  const saved = localStorage.getItem('fusha-theme');
+  if (saved === 'dark') {
+    isDark = true;
+    document.documentElement.classList.add('dark');
+  } else if (saved === 'light') {
+    isDark = false;
+    document.documentElement.classList.add('light');
+  } else {
+    // Follow system
+    isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  updateModeLabel();
+}
+
+function toggleTheme(event) {
+  isDark = !isDark;
+
+  // Remove both, add the right one
+  document.documentElement.classList.remove('dark', 'light');
+  document.documentElement.classList.add(isDark ? 'dark' : 'light');
+  localStorage.setItem('fusha-theme', isDark ? 'dark' : 'light');
+
+  updateModeLabel();
+  spawnStars(event);
+  showToast(isDark ? '🌙 الوضع الليلي' : '☀️ الوضع النهاري');
+}
+
+function updateModeLabel() {
+  const label = document.getElementById('modeLabel');
+  if (label) label.textContent = isDark ? 'ليلي' : 'نهاري';
+}
+
+function spawnStars(event) {
+  const btn = document.getElementById('themeToggle');
+  const rect = btn.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const symbols = isDark ? ['✦','★','☽','·','✧'] : ['☀','✦','✧','·','★'];
+  symbols.forEach((sym, i) => {
+    const el = document.createElement('div');
+    el.className = 'star-burst';
+    el.textContent = sym;
+    const angle = (i / symbols.length) * 2 * Math.PI;
+    const dist = 30 + Math.random() * 20;
+    el.style.left = (cx + Math.cos(angle) * dist) + 'px';
+    el.style.top = (cy + Math.sin(angle) * dist) + 'px';
+    el.style.animationDelay = (i * 0.05) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 800);
+  });
+}
+
+// ═══ APP LOGIC ═══
+const vocabulary = [
+  { word: 'سَكِينة', diacritic: 'اسم مؤنث', meaning: 'الطمأنينة والهدوء التام الذي يسكن القلب والسلام الداخلي', root: 'س ك ن', usage: 'شعر بالسكينة تغمر روحه حين قرأ القرآن الكريم', etymology: 'من الجذر (س ك ن) يدل على الهدوء والثبات',
+    quranicOccurrences: [
+      { verse: 'هُوَ الَّذِي أَنزَلَ السَّكِينَةَ فِي قُلُوبِ الْمُؤْمِنِينَ لِيَزْدَادُوا إِيمَانًا', surah: 'الفتح', ayah: '٤', highlight: 'السَّكِينَةَ' },
+      { verse: 'فَأَنزَلَ اللَّهُ سَكِينَتَهُ عَلَيْهِ وَأَيَّدَهُ بِجُنُودٍ لَّمْ تَرَوْهَا', surah: 'التوبة', ayah: '٤٠', highlight: 'سَكِينَتَهُ' },
+      { verse: 'ثُمَّ أَنزَلَ اللَّهُ سَكِينَتَهُ عَلَىٰ رَسُولِهِ وَعَلَى الْمُؤْمِنِينَ', surah: 'الفتح', ayah: '٢٦', highlight: 'سَكِينَتَهُ' }
+    ]
+  },
+  { word: 'وَجَل', diacritic: 'اسم مذكر', meaning: 'الخوف والفزع الذي يعتري القلب من شيء مهيب', root: 'و ج ل', usage: 'أصابه الوجل حين سمع الرعد يهدر في السماء', etymology: 'من الجذر (و ج ل) يدل على الخوف والرهبة',
+    quranicOccurrences: [
+      { verse: 'الَّذِينَ إِذَا ذُكِرَ اللَّهُ وَجِلَتْ قُلُوبُهُمْ وَالصَّابِرِينَ عَلَىٰ مَا أَصَابَهُمْ', surah: 'الحج', ayah: '٣٥', highlight: 'وَجِلَتْ' },
+      { verse: 'إِنَّمَا الْمُؤْمِنُونَ الَّذِينَ إِذَا ذُكِرَ اللَّهُ وَجِلَتْ قُلُوبُهُمْ', surah: 'الأنفال', ayah: '٢', highlight: 'وَجِلَتْ' }
+    ]
+  },
+  { word: 'نَشِيد', diacritic: 'اسم مذكر', meaning: 'الأغنية أو القصيدة التي تُنشد بصوت رفيع مؤثر', root: 'ن ش د', usage: 'رددوا النشيد الوطني بأصوات تملؤها الحماسة', etymology: 'من الجذر (ن ش د) يدل على رفع الصوت بالغناء',
+    quranicOccurrences: [
+      { verse: 'قَالُوا أَإِنَّكَ لَأَنتَ يُوسُفُ قَالَ أَنَا يُوسُفُ وَهَٰذَا أَخِي قَدْ مَنَّ اللَّهُ عَلَيْنَا', surah: 'يوسف', ayah: '٩٠', highlight: 'يُوسُفُ' }
+    ]
+  },
+  { word: 'غَبَق', diacritic: 'اسم مذكر', meaning: 'الشراب الذي يُتناول مساءً عند المغيب', root: 'غ ب ق', usage: 'جلسوا يتبادلون الغبق تحت ضوء القمر المكتمل', etymology: 'من الجذر (غ ب ق) يدل على المساء والعشيّ',
+    quranicOccurrences: []
+  },
+  { word: 'هَيْمَنة', diacritic: 'اسم مؤنث', meaning: 'السيطرة والسلطان والإشراف التام على شيء', root: 'ه ي م ن', usage: 'كانت هيمنته على الميدان واضحة لكل من حضر', etymology: 'من الجذر (ه ي م ن) يدل على الإشراف والحفظ',
+    quranicOccurrences: [
+      { verse: 'وَأَنزَلْنَا إِلَيْكَ الْكِتَابَ بِالْحَقِّ مُصَدِّقًا لِّمَا بَيْنَ يَدَيْهِ مِنَ الْكِتَابِ وَمُهَيْمِنًا عَلَيْهِ', surah: 'المائدة', ayah: '٤٨', highlight: 'وَمُهَيْمِنًا' }
+    ]
+  },
+  { word: 'رَهِيف', diacritic: 'صفة', meaning: 'الدقيق الرقيق اللطيف في طبعه وتفكيره', root: 'ر ه ف', usage: 'امتلك حساً رهيفاً يدرك به المشاعر الدفينة', etymology: 'من الجذر (ر ه ف) يدل على الدقة والرقة',
+    quranicOccurrences: []
+  },
+  { word: 'وَمِيض', diacritic: 'اسم مذكر', meaning: 'اللمعان الخاطف والبريق العابر كالبرق', root: 'و م ض', usage: 'رأى وميض البرق يشق السماء المعتمة', etymology: 'من الجذر (و م ض) يدل على اللمعان والإضاءة',
+    quranicOccurrences: [
+      { verse: 'يَكَادُ الْبَرْقُ يَخْطَفُ أَبْصَارَهُمْ كُلَّمَا أَضَاءَ لَهُم مَّشَوْا فِيهِ', surah: 'البقرة', ayah: '٢٠', highlight: 'الْبَرْقُ' }
+    ]
+  },
+  { word: 'صَهِيل', diacritic: 'اسم مذكر', meaning: 'صوت الفرس حين ينطلق بكل قوته وحرية', root: 'ص ه ل', usage: 'ملأ صهيل الخيل الأفق في فجر ذلك اليوم المجيد', etymology: 'من الجذر (ص ه ل) يدل على صوت الخيل',
+    quranicOccurrences: [
+      { verse: 'وَالْعَادِيَاتِ ضَبْحًا فَالْمُورِيَاتِ قَدْحًا فَالْمُغِيرَاتِ صُبْحًا', surah: 'العاديات', ayah: '١-٣', highlight: 'وَالْعَادِيَاتِ' }
+    ]
+  },
+  { word: 'تَجَلٍّ', diacritic: 'اسم مذكر', meaning: 'الظهور والانكشاف بعد الخفاء والغموض', root: 'ج ل و', usage: 'كان تجلي الحقيقة أمامه بداية مرحلة جديدة', etymology: 'من الجذر (ج ل و) يدل على الوضوح والإنارة',
+    quranicOccurrences: [
+      { verse: 'فَلَمَّا تَجَلَّىٰ رَبُّهُ لِلْجَبَلِ جَعَلَهُ دَكًّا وَخَرَّ مُوسَىٰ صَعِقًا', surah: 'الأعراف', ayah: '١٤٣', highlight: 'تَجَلَّىٰ' },
+      { verse: 'وَاللَّيْلِ إِذَا يَغْشَىٰ وَالنَّهَارِ إِذَا تَجَلَّىٰ', surah: 'الليل', ayah: '١-٢', highlight: 'تَجَلَّىٰ' }
+    ]
+  },
+  { word: 'نَفَحَة', diacritic: 'اسم مؤنث', meaning: 'الرائحة الطيبة الخفيفة التي تعبر في الهواء', root: 'ن ف ح', usage: 'وصلته نفحة المسك من بعيد فعرف أنها قريبة', etymology: 'من الجذر (ن ف ح) يدل على العطاء والفيض',
+    quranicOccurrences: [
+      { verse: 'وَلَئِن مَّسَّتْهُمْ نَفْحَةٌ مِّنْ عَذَابِ رَبِّكَ لَيَقُولُنَّ يَا وَيْلَنَا', surah: 'الأنبياء', ayah: '٤٦', highlight: 'نَفْحَةٌ' }
+    ]
+  },
+  { word: 'زَفِير', diacritic: 'اسم مذكر', meaning: 'الإخراج العميق للنفَس والتنهيد الثقيل', root: 'ز ف ر', usage: 'أطلق زفيراً عميقاً حين سمع الخبر المحزن', etymology: 'من الجذر (ز ف ر) يدل على إخراج النفس بشدة',
+    quranicOccurrences: [
+      { verse: 'لَهُمْ فِيهَا زَفِيرٌ وَشَهِيقٌ', surah: 'هود', ayah: '١٠٦', highlight: 'زَفِيرٌ' },
+      { verse: 'إِذَا أُلْقُوا فِيهَا سَمِعُوا لَهَا شَهِيقًا وَهِيَ تَفُورُ', surah: 'الملك', ayah: '٧', highlight: 'شَهِيقًا' }
+    ]
+  },
+  { word: 'أَرِيكة', diacritic: 'اسم مؤنث', meaning: 'السرير الوثير الفاخر أو المقعد المريح المزيَّن', root: 'أ ر ك', usage: 'جلس الملك على أريكته يستمع لحكماء البلاط', etymology: 'من الجذر (أ ر ك) يدل على الشجر الكثيف الملتف',
+    quranicOccurrences: [
+      { verse: 'مُتَّكِئِينَ فِيهَا عَلَى الْأَرَائِكِ ۚ نِعْمَ الثَّوَابُ وَحَسُنَتْ مُرْتَفَقًا', surah: 'الكهف', ayah: '٣١', highlight: 'الْأَرَائِكِ' },
+      { verse: 'هُمْ وَأَزْوَاجُهُمْ فِي ظِلَالٍ عَلَى الْأَرَائِكِ مُتَّكِئُونَ', surah: 'يس', ayah: '٥٦', highlight: 'الْأَرَائِكِ' },
+      { verse: 'عَلَى الْأَرَائِكِ يَنظُرُونَ', surah: 'المطففين', ayah: '٢٣', highlight: 'الْأَرَائِكِ' }
+    ]
+  },
+  { word: 'شَفَق', diacritic: 'اسم مذكر', meaning: 'الحمرة الجميلة التي تبقى في الأفق بعد الغروب', root: 'ش ف ق', usage: 'جلسا يتأملان الشفق الذهبي يصبغ آخر السماء', etymology: 'من الجذر (ش ف ق) يدل على الرقة والرحمة',
+    quranicOccurrences: [
+      { verse: 'فَلَا أُقْسِمُ بِالشَّفَقِ وَاللَّيْلِ وَمَا وَسَقَ', surah: 'الانشقاق', ayah: '١٦-١٧', highlight: 'بِالشَّفَقِ' }
+    ]
+  },
+  { word: 'خَلَسَة', diacritic: 'اسم مؤنث', meaning: 'الفعل المأخوذ في خفية وسرية تامة', root: 'خ ل س', usage: 'سرقت نظرة خلسة نحوه قبل أن يلتفت إليها', etymology: 'من الجذر (خ ل س) يدل على الأخذ بالحيلة',
+    quranicOccurrences: []
+  },
+  { word: 'بَهِيَّة', diacritic: 'صفة مؤنث', meaning: 'الشيء الحسن الجميل المبهج الناضر الرائع', root: 'ب ه و', usage: 'كانت الحديقة بهية الجمال في ليلة القمر', etymology: 'من الجذر (ب ه و) يدل على البهاء والجمال',
+    quranicOccurrences: [
+      { verse: 'وُجُوهٌ يَوْمَئِذٍ نَّاضِرَةٌ إِلَىٰ رَبِّهَا نَاظِرَةٌ', surah: 'القيامة', ayah: '٢٢-٢٣', highlight: 'نَّاضِرَةٌ' }
+    ]
+  },
+  { word: 'طَرَب', diacritic: 'اسم مذكر', meaning: 'خفة الروح والسرور الشديد الذي يتملك المرء', root: 'ط ر ب', usage: 'أخذه الطرب حين سمع الموسيقى الأندلسية العذبة', etymology: 'من الجذر (ط ر ب) يدل على الخفة والانبساط',
+    quranicOccurrences: []
+  },
+  { word: 'إِهَاب', diacritic: 'اسم مذكر', meaning: 'الجلد قبل الدباغة أو الغلاف الخارجي للشيء', root: 'أ ه ب', usage: 'كان إهاب الكتاب مزيناً بالذهب والنقوش', etymology: 'من الجذر (أ ه ب) يدل على الاستعداد والتهيؤ',
+    quranicOccurrences: []
+  },
+  { word: 'قُدُس', diacritic: 'اسم مذكر', meaning: 'الطهارة المطلقة والنزاهة الكاملة والتنزيه', root: 'ق د س', usage: 'تسبّحوا بحمد الله مُقدِّسين إياه في الفجر', etymology: 'من الجذر (ق د س) يدل على الطهارة والتعظيم',
+    quranicOccurrences: [
+      { verse: 'وَنَحْنُ نُسَبِّحُ بِحَمْدِكَ وَنُقَدِّسُ لَكَ', surah: 'البقرة', ayah: '٣٠', highlight: 'وَنُقَدِّسُ' },
+      { verse: 'قُلْ نَزَّلَهُ رُوحُ الْقُدُسِ مِن رَّبِّكَ بِالْحَقِّ', surah: 'النحل', ayah: '١٠٢', highlight: 'الْقُدُسِ' },
+      { verse: 'إِذْ أَيَّدتُّكَ بِرُوحِ الْقُدُسِ تُكَلِّمُ النَّاسَ فِي الْمَهْدِ وَكَهْلًا', surah: 'المائدة', ayah: '١١٠', highlight: 'الْقُدُسِ' }
+    ]
+  },
+  { word: 'رَنِين', diacritic: 'اسم مذكر', meaning: 'الصوت المديد الرقيق الذي يطول في الهواء', root: 'ر ن ن', usage: 'سمع رنين الأجراس يتردد في وديان الجبال', etymology: 'من الجذر (ر ن ن) يدل على استمرار الصوت',
+    quranicOccurrences: []
+  },
+  { word: 'صَوَّان', diacritic: 'اسم مذكر', meaning: 'الحجر الصلب الذي يقاوم الكسر والبلى', root: 'ص و ن', usage: 'قلبه كالصوّان لا تهزه العواصف والشدائد', etymology: 'من الجذر (ص و ن) يدل على الحفظ والمنع',
+    quranicOccurrences: [
+      { verse: 'ثُمَّ قَسَتْ قُلُوبُكُم مِّن بَعْدِ ذَٰلِكَ فَهِيَ كَالْحِجَارَةِ أَوْ أَشَدُّ قَسْوَةً', surah: 'البقرة', ayah: '٧٤', highlight: 'كَالْحِجَارَةِ' }
+    ]
+  }
+];
+
+const quranVerses = [
+  { verse: 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ', ref: 'سورة الرعد • الآية ٢٨', tafsir: 'إن الطمأنينة الحقيقية لا توجد إلا في ذكر الله وإقامة صلته بالخالق، فالقلوب تجد راحتها في ذكره وحده' },
+  { verse: 'وَعَسَىٰ أَن تَكْرَهُوا شَيْئًا وَهُوَ خَيْرٌ لَّكُمْ', ref: 'سورة البقرة • الآية ٢١٦', tafsir: 'قد يكره الإنسان شيئاً لا يرى في ظاهره خيراً، لكن علم الله أوسع، فما يبدو مراً قد يحمل في طياته الخير الكثير' },
+  { verse: 'فَإِنَّ مَعَ الْعُسْرِ يُسْرًا', ref: 'سورة الشرح • الآية ٥', tafsir: 'وعد إلهي راسخ بأن الفرج قريب وأن مع كل ضيق فرجاً، وكلما اشتدت الشدة كان الفرج أقرب' },
+  { verse: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً', ref: 'سورة البقرة • الآية ٢٠١', tafsir: 'دعاء جامع يطلب فيه المؤمن خيري الدنيا والآخرة، وهو من أكثر الأدعية التي كان النبي ﷺ يدعو بها' },
+  { verse: 'إِنَّ اللَّهَ مَعَ الصَّابِرِينَ', ref: 'سورة البقرة • الآية ١٥٣', tafsir: 'بشرى عظيمة لمن صبر على البلاء، فإن الله معه بنصره وتأييده ومعيته الخاصة التي تشمل الحفظ والرعاية' },
+  { verse: 'وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا', ref: 'سورة الطلاق • الآية ٢', tafsir: 'وعد ربّاني بأن من يتقي الله ويراقبه في السر والعلن، يهيئ الله له مخرجاً من كل ضيق وكل مأزق' },
+  { verse: 'وَلَنَبْلُوَنَّكُم بِشَيْءٍ مِّنَ الْخَوْفِ وَالْجُوعِ', ref: 'سورة البقرة • الآية ١٥٥', tafsir: 'إخبار إلهي بأن الابتلاء سنة كونية، وأن الحياة الدنيا دار اختبار، وأن الصبر عليها يورث الأجر العظيم' },
+  { verse: 'وَقُل رَّبِّ زِدْنِي عِلْمًا', ref: 'سورة طه • الآية ١١٤', tafsir: 'أمر إلهي للنبي ﷺ وللمؤمنين بالسعي الدائم لطلب العلم وعدم الاكتفاء بما حُصِّل منه' },
+  { verse: 'تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ', ref: 'سورة الملك • الآية ١', tafsir: 'تعظيم لله الذي بيده وحده ملك الكون كله، يعطي ويمنع ويحيي ويميت، وهو على كل شيء قدير' },
+  { verse: 'إِنَّا أَنزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ', ref: 'سورة القدر • الآية ١', tafsir: 'إعلان عظيم بنزول القرآن الكريم في الليلة المباركة التي هي خير من ألف شهر في الأجر والثواب' },
+  { verse: 'قُلْ هُوَ اللَّهُ أَحَدٌ', ref: 'سورة الإخلاص • الآية ١', tafsir: 'إثبات لوحدانية الله المطلقة والكاملة، إذ لا شريك له ولا مثيل ولا ند في ملكه وجلاله وكماله' },
+  { verse: 'وَاللَّهُ يُحِبُّ الْمُحْسِنِينَ', ref: 'سورة آل عمران • الآية ١٣٤', tafsir: 'ترغيب في الإحسان وهو أعلى درجات العبادة، والمحسن من يعبد الله كأنه يراه فإن لم يره فإن الله يراه' },
+  { verse: 'خَلَقَ الْإِنسَانَ مِن عَلَق', ref: 'سورة العلق • الآية ٢', tafsir: 'تذكير بأصل الإنسان المتواضع من قطعة دم جامدة، ليعرف قدره ولا يتكبر على خالقه العظيم' },
+  { verse: 'وَمَا أُوتِيتُم مِّنَ الْعِلْمِ إِلَّا قَلِيلًا', ref: 'سورة الإسراء • الآية ٨٥', tafsir: 'تنبيه على محدودية المعرفة الإنسانية، وأن مهما بلغ العلم البشري فهو لا يزال ضئيلاً أمام علم الله المحيط' },
+  { verse: 'وَلَذِكْرُ اللَّهِ أَكْبَرُ', ref: 'سورة العنكبوت • الآية ٤٥', tafsir: 'بيان لمنزلة ذكر الله العلية، إذ إنه أكبر الطاعات وأعظم العبادات وأشرفها قدراً عند الله سبحانه' }
+];
+
+let currentWordIndex = 0;
+let currentVerseIndex = 0;
+let refreshInterval = null;
+let nextRefreshTime = 300 * 60; // 300 minutes in seconds
+let timerInterval = null;
+let isModalOpen = false;
+let modalType = 'word';
+
+function init() {
+  renderVocabList();
+  renderVerseList();
+  startTimer();
+  updateProgressRing();
+}
+
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    nextRefreshTime--;
+    if (nextRefreshTime <= 0) {
+      nextRefreshTime = 300 * 60;
+      autoRefresh();
+    }
+    updateTimerDisplay();
+    updateProgressRing();
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const hours = Math.floor(nextRefreshTime / 3600);
+  const minutes = Math.floor((nextRefreshTime % 3600) / 60);
+  const el = document.getElementById('timerText');
+  if (el) {
+    if (hours > 0) {
+      el.textContent = `يتجدد بعد ${toArabicNumerals(hours)} ساعة و${toArabicNumerals(minutes)} دقيقة`;
+    } else {
+      el.textContent = `يتجدد بعد ${toArabicNumerals(minutes)} دقيقة`;
+    }
+  }
+}
+
+function updateProgressRing() {
+  const ring = document.getElementById('progressRing');
+  if (!ring) return;
+  const total = 300 * 60;
+  const elapsed = total - nextRefreshTime;
+  const percent = elapsed / total;
+  const circumference = 2 * Math.PI * 14;
+  const offset = circumference * (1 - percent);
+  ring.style.strokeDasharray = circumference;
+  ring.style.strokeDashoffset = offset;
+}
+
+function autoRefresh() {
+  currentWordIndex = (currentWordIndex + 1) % vocabulary.length;
+  currentVerseIndex = (currentVerseIndex + 1) % quranVerses.length;
+  updateMainCard(vocabulary[currentWordIndex]);
+  updateVerseCard(quranVerses[currentVerseIndex]);
+}
+
+function refreshContent() {
+  currentWordIndex = (currentWordIndex + 1) % vocabulary.length;
+  currentVerseIndex = (currentVerseIndex + 1) % quranVerses.length;
+  updateMainCard(vocabulary[currentWordIndex], true);
+  updateVerseCard(quranVerses[currentVerseIndex]);
+  nextRefreshTime = 300 * 60;
+  showToast('تم تحديث المحتوى ✦');
+}
+
+function updateMainCard(item, animate = false) {
+  const card = document.getElementById('mainCard');
+  if (animate) {
+    card.style.opacity = '0.5';
+    card.style.transform = 'scale(0.98)';
+    setTimeout(() => {
+      document.getElementById('mainWord').textContent = item.word;
+      document.getElementById('mainDiacritic').textContent = item.diacritic;
+      document.getElementById('mainMeaning').textContent = item.meaning;
+      document.getElementById('mainRoot').textContent = 'الجذر: ' + item.root;
+      card.style.opacity = '1';
+      card.style.transform = 'scale(1)';
+    }, 300);
+    card.style.transition = 'all 0.3s ease';
+  } else {
+    document.getElementById('mainWord').textContent = item.word;
+    document.getElementById('mainDiacritic').textContent = item.diacritic;
+    document.getElementById('mainMeaning').textContent = item.meaning;
+    document.getElementById('mainRoot').textContent = 'الجذر: ' + item.root;
+  }
+}
+
+function updateVerseCard(verse) {
+  document.getElementById('verseText').textContent = verse.verse;
+  document.getElementById('verseRef').textContent = verse.ref;
+  document.getElementById('verseTafsir').textContent = verse.tafsir;
+}
+
+function renderVocabList() {
+  const container = document.getElementById('vocabList');
+  container.innerHTML = vocabulary.map((item, i) => `
+    <div class="vocab-card" onclick="openVocabDetail(${i})" style="animation: fadeInUp 0.4s ease ${i * 0.04}s forwards; opacity: 0">
+      <div class="vocab-letter">${item.word[0]}</div>
+      <div class="vocab-info">
+        <div class="vocab-word">${item.word}</div>
+        <div class="vocab-def">${item.diacritic} • ${item.meaning.substring(0, 40)}...</div>
+      </div>
+      <div class="vocab-arrow">‹</div>
+    </div>
+  `).join('');
+}
+
+function renderVerseList() {
+  const container = document.getElementById('verseList');
+  container.innerHTML = quranVerses.map((item, i) => `
+    <div class="quran-card" onclick="openQuranDetail(${i})" style="animation: fadeInUp 0.4s ease ${i * 0.04}s forwards; opacity: 0">
+      <div class="verse-text" style="font-size:18px">${item.verse}</div>
+      <div class="verse-ref">${item.ref}</div>
+      <div class="verse-tafsir">${item.tafsir}</div>
+    </div>
+  `).join('');
+}
+
+function openWordDetail() {
+  const item = vocabulary[currentWordIndex];
+  document.getElementById('modalWord').textContent = item.word;
+  document.getElementById('modalRoot').textContent = item.diacritic + ' • الجذر: ' + item.root;
+  document.getElementById('modalMeaning').textContent = item.meaning;
+  document.getElementById('modalUsage').textContent = item.usage;
+  document.getElementById('modalEtymology').textContent = item.etymology;
+  document.getElementById('modalQuranSection').style.display = 'block';
+  renderOccurrences(item);
+  modalType = 'word';
+  openModal();
+}
+
+function renderOccurrences(item) {
+  const section = document.getElementById('modalQuranSection');
+  const list = document.getElementById('occurrencesList');
+  const badge = document.getElementById('occurrencesCountBadge');
+  const occs = item.quranicOccurrences || [];
+
+  badge.textContent = toArabicNumerals(occs.length) + ' مواضع';
+
+  if (occs.length === 0) {
+    list.innerHTML = `
+      <div class="no-occurrences">
+        <span class="no-occ-icon">📖</span>
+        لم يُعثر على ورود مباشر لهذه الكلمة في القرآن الكريم
+      </div>`;
+    return;
+  }
+
+  list.innerHTML = occs.map((occ, i) => {
+    // Highlight the matching word in the verse
+    const highlightedVerse = occ.verse.replace(
+      occ.highlight,
+      `<span class="highlight">${occ.highlight}</span>`
+    );
+    return `
+      <div class="occurrence-card" style="animation-delay:${i * 0.08}s">
+        <div class="occurrence-verse">${highlightedVerse}</div>
+        <div class="occurrence-meta">
+          <div class="occurrence-surah-num">الآية ${occ.ayah}</div>
+          <div class="occurrence-ref">سورة ${occ.surah}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function openVerseDetail() {
+  const item = quranVerses[currentVerseIndex];
+  document.getElementById('modalWord').textContent = item.verse;
+  document.getElementById('modalRoot').textContent = item.ref;
+  document.getElementById('modalMeaning').textContent = item.tafsir;
+  document.getElementById('modalUsage').textContent = 'آية كريمة من القرآن العظيم';
+  document.getElementById('modalEtymology').textContent = 'القرآن الكريم هو كلام الله المنزل على نبيه محمد ﷺ، هدى للناس وبينات من الهدى والفرقان';
+  document.getElementById('modalQuranSection').style.display = 'none';
+  modalType = 'verse';
+  openModal();
+}
+
+function openVocabDetail(index) {
+  currentWordIndex = index;
+  openWordDetail();
+}
+
+function openQuranDetail(index) {
+  currentVerseIndex = index;
+  openVerseDetail();
+}
+
+function openModal() {
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  isModalOpen = true;
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modalOverlay')) {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+    isModalOpen = false;
+  }
+}
+
+function shareWord() {
+  const item = vocabulary[currentWordIndex];
+  const text = `✦ كلمة اليوم من تطبيق فُصحى ✦\n\n${item.word}\n${item.diacritic}\n\n${item.meaning}\n\n📱 تطبيق فُصحى - أثرِ لغتك العربية`;
+  if (navigator.share) {
+    navigator.share({ title: 'فُصحى - كلمة اليوم', text });
+  } else {
+    navigator.clipboard.writeText(text).then(() => showToast('تم النسخ للحافظة ✓'));
+  }
+}
+
+function copyWord() {
+  const item = vocabulary[currentWordIndex];
+  navigator.clipboard.writeText(`${item.word} - ${item.meaning}`).then(() => {
+    showToast('تم النسخ ✓');
+    closeModal();
+  });
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('homeSection').style.display = 'none';
+
+  if (tab === 'home') {
+    document.getElementById('navHome').classList.add('active');
+    document.getElementById('homeSection').style.display = 'block';
+  } else if (tab === 'vocab') {
+    document.getElementById('navVocab').classList.add('active');
+    document.getElementById('vocabSection').classList.add('active');
+  } else if (tab === 'quran') {
+    document.getElementById('navQuran').classList.add('active');
+    document.getElementById('quranSection').classList.add('active');
+  }
+}
+
+function toArabicNumerals(n) {
+  const map = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+  return String(n).replace(/[0-9]/g, d => map[d]);
+}
+
+// Initialize
+window.addEventListener('DOMContentLoaded', () => {
+  detectInitialTheme();
+  document.getElementById('homeSection').style.display = 'block';
+  init();
+
+  // Random starting word
+  currentWordIndex = Math.floor(Math.random() * vocabulary.length);
+  currentVerseIndex = Math.floor(Math.random() * quranVerses.length);
+  updateMainCard(vocabulary[currentWordIndex]);
+  updateVerseCard(quranVerses[currentVerseIndex]);
+});
+
+// Swipe to close modal
+let startY = 0;
+document.getElementById('detailModal').addEventListener('touchstart', e => { startY = e.touches[0].clientY; });
+document.getElementById('detailModal').addEventListener('touchend', e => {
+  const diff = e.changedTouches[0].clientY - startY;
+  if (diff > 80) closeModal();
+});
+// Register Service Worker for PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.log('SW error:', err));
+  });
+}
+</script>
+</body>
+</html>
